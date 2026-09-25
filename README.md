@@ -2,14 +2,14 @@
 
 MyVariant.info MCP.
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1476+ live data sources.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1679+ live data sources.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `query` | Search aggregated human genetic-variant annotations on MyVariant.info. Accepts an rsID ("rs58991260"), an HGVS id ("chr1:g.218631822G>A"), or a fielded query ("dbnsfp.genename:CDK2", "clinvar.rcv.clinical_significance:pathogenic"). Each hit merges dbSNP, ClinVar clinical significance, CADD/dbNSFP deleteriousness scores, and gnomAD population allele frequencies. Returns { total, hits }; hit._id is usually the HGVS id you can pass to the variant tool. |
-| `variant` | Get the full merged annotation for a single human genetic variant by its HGVS id (e.g. "chr7:g.140453136A>T"). Returns annotations aggregated from dbSNP, ClinVar (pathogenicity / clinical significance), CADD and dbNSFP (deleteriousness/conservation scores), and gnomAD (population allele frequencies). Use to look up a known variant and read its pathogenicity and population frequency. |
+| `query` | Search aggregated human genetic-variant annotations on MyVariant.info. Accepts an rsID ("rs58991260") or a fielded query ("dbnsfp.genename:CDK2", "clinvar.rcv.clinical_significance:pathogenic"). A bare HGVS id does NOT match here — look one up with the variant tool instead. Each hit merges dbSNP, ClinVar clinical significance, CADD/dbNSFP deleteriousness scores, and gnomAD population allele frequencies. Returns { total, hits, assembly }; hit._id is the HGVS id you can pass to the variant tool, and its coordinates are in the assembly you asked for — hg19 unless you say otherwise. |
+| `variant` | Get the full merged annotation for a single human genetic variant by its HGVS id (e.g. "chr7:g.140453136A>T"). COORDINATES ARE hg19/GRCh37 BY DEFAULT — pass assembly "hg38" for GRCh38 positions, which is what gnomAD and Ensembl hand you. Returns annotations aggregated from dbSNP, ClinVar (pathogenicity / clinical significance), CADD and dbNSFP (deleteriousness/conservation scores), and gnomAD (population allele frequencies). Use to look up a known variant and read its pathogenicity and population frequency. |
 | `metadata` | Returns MyVariant.info build metadata: total indexed variant count, available annotation sources (dbSNP, ClinVar, CADD, dbNSFP, gnomAD), and their current release/build versions. |
 
 ## Quick Start
@@ -56,9 +56,45 @@ directly, instead of just this one's:
 }
 ```
 
-Both URLs reach the same gateway and the same 1476+ data sources. The
+Both URLs reach the same gateway and the same 1679+ data sources. The
 only difference is which pack's tools are listed **directly**; `ask_pipeworx`
 reaches all of them from either one.
+
+## No MCP client? Call it over HTTP
+
+```bash
+curl -X POST https://gateway.pipeworx.io/v1/tools/myvariant_query \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"rs58991260"}'
+```
+
+No account needed for the first calls. Inspect any tool: `GET https://gateway.pipeworx.io/v1/tools/myvariant_query`. Find one: `POST https://gateway.pipeworx.io/v1/tools/search_packs` with `{"query":"..."}`.
+
+## Standalone (no gateway account)
+
+This package also runs as a local stdio MCP server — no Pipeworx account, no
+gateway round-trip:
+
+```json
+{
+  "mcpServers": {
+    "myvariant": {
+      "command": "npx",
+      "args": ["-y", "@pipeworx/mcp-myvariant"]
+    }
+  }
+}
+```
+
+Or run it directly to confirm it starts:
+
+```bash
+npx -y @pipeworx/mcp-myvariant
+```
+
+It speaks MCP over stdin/stdout and answers `initialize`/`tools/list`/`tools/call`
+for **only** this pack's tools — none of the shared meta-tools the gateway
+connection above adds. Same source, same tools, no ask_pipeworx routing.
 
 ## Using with ask_pipeworx
 
@@ -79,13 +115,3 @@ The gateway picks the right tool and fills the arguments automatically.
 ## License
 
 MIT
-
-## No MCP client? Call it over HTTP
-
-```bash
-curl -X POST https://gateway.pipeworx.io/v1/tools/myvariant_query \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"rs58991260"}'
-```
-
-No account needed for the first calls. Inspect any tool: `GET https://gateway.pipeworx.io/v1/tools/myvariant_query`. Find one: `POST https://gateway.pipeworx.io/v1/tools/search_packs` with `{"query":"..."}`.
