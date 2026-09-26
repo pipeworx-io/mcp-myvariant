@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-myvariant",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MyVariant.info MCP.",
   "type": "module",
   "main": "src/index.ts",
@@ -26,7 +26,7 @@
     "@cloudflare/workers-types": "^4.20260405.1"
   },
   "pipeworx": {
-    "sourceHash": "v1-23a6b19ab6fd9b9d2ed4f6f60173b48a676dcb86a022aeb63abce36e406e4ef2",
-    "sourceCommit": "adb69d997f82a62e8e22b594488c7d04a227db35"
+    "sourceHash": "v1-42091164e987c7a1339e52edfdaa3a5181fbc4f6a844fda7b638ac8b7a0ed0bf",
+    "sourceCommit": "6182c4cfebddb94950e060b5d2fca18f18ad1aca"
   }
 }
