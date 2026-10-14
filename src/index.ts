@@ -783,14 +783,18 @@ async function callTool(name: string, args: Record<string, unknown>): Promise<un
           const alt = await variantFetch(id, other, args.fields).catch(() => null);
           if (alt?.ok) {
             return {
-              error: 'variant not found in this assembly',
+              // not_found: so a missing variant books as the caller's lookup
+              // miss, not a Pipeworx defect — 204 of 227 calls in the 24h to
+              // 2026-10-13 were a scanner fleet feeding junk ids and every one
+              // read as OUR error on the problem-tools list (fleet #2960 shape).
+              error: 'not_found: variant not found in this assembly',
               id,
               assembly,
               found_in_assembly: other,
               hint: `${id} is not in ${assembly}, but it IS in ${other}. Retry with assembly "${other}".`,
             };
           }
-          return { error: 'variant not found', id, assembly };
+          return { error: `not_found: variant ${id} not found in ${assembly} (or ${other})`, id, assembly };
         }
         if (!res.ok) return { error: `MyVariant: ${res.status}` };
         return { ...((await res.json()) as Record<string, unknown>), assembly };
