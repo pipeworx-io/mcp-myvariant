@@ -1,0 +1,62 @@
+[
+  {
+    "name": "query",
+    "description": "Search aggregated human genetic-variant annotations on MyVariant.info. Accepts an rsID (\"rs58991260\") or a fielded query (\"dbnsfp.genename:CDK2\", \"clinvar.rcv.clinical_significance:pathogenic\"). A bare HGVS id does NOT match here — look one up with the variant tool instead. Each hit merges dbSNP, ClinVar clinical significance, CADD/dbNSFP deleteriousness scores, and gnomAD population allele frequencies. Returns { total, hits, assembly }; hit._id is the HGVS id you can pass to the variant tool, and its coordinates are in the assembly you asked for — hg19 unless you say otherwise.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "rsID, HGVS id, or fielded query. e.g. \"rs58991260\", \"chr1:g.218631822G>A\", \"dbnsfp.genename:CDK2\"."
+        },
+        "fields": {
+          "type": "string",
+          "description": "Comma-separated return fields (default: all). e.g. \"dbsnp,clinvar,cadd.phred,gnomad_genome.af\"."
+        },
+        "size": {
+          "type": "number",
+          "description": "Max hits to return, 1-1000 (default 10)."
+        },
+        "assembly": {
+          "type": "string",
+          "description": "Genome build for the coordinates you pass AND the ids you get back: \"hg19\" (GRCh37, the default) or \"hg38\" (GRCh38). gnomAD and Ensembl coordinates are GRCh38."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  },
+  {
+    "name": "variant",
+    "description": "Get the full merged annotation for a single human genetic variant by its HGVS id (e.g. \"chr7:g.140453136A>T\"). COORDINATES ARE hg19/GRCh37 BY DEFAULT — pass assembly \"hg38\" for GRCh38 positions, which is what gnomAD and Ensembl hand you. Returns annotations aggregated from dbSNP, ClinVar (pathogenicity / clinical significance), CADD and dbNSFP (deleteriousness/conservation scores), and gnomAD (population allele frequencies). Use to look up a known variant and read its pathogenicity and population frequency.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "An HGVS variant id, e.g. \"chr7:g.140453136A>T\" (hg19 unless you set assembly)."
+        },
+        "fields": {
+          "type": "string",
+          "description": "Comma-separated return fields (default: all). e.g. \"clinvar,gnomad_genome.af,cadd.phred\"."
+        },
+        "assembly": {
+          "type": "string",
+          "description": "Genome build for the coordinates you pass AND the ids you get back: \"hg19\" (GRCh37, the default) or \"hg38\" (GRCh38). gnomAD and Ensembl coordinates are GRCh38."
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  },
+  {
+    "name": "metadata",
+    "description": "Returns MyVariant.info build metadata: total indexed variant count, available annotation sources (dbSNP, ClinVar, CADD, dbNSFP, gnomAD), and their current release/build versions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  }
+]
