@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-myvariant",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MyVariant.info MCP. Aggregated human genetic-variant annotation: dbSNP, ClinVar clinical significance, CADD/dbNSFP deleteriousness scores, gnomAD allele frequencies. Keyless BioThings API (sibling of MyGene.info). Docs: https://docs.myvariant.info/en/latest/",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "mode": "gateway",
     "slug": "myvariant",
     "gatewaySlug": "myvariant",
-    "sourceHash": "v1-372b4c25603f00e9b4f9d025dae66536e3e39543f05d0924f6c869ed4ff6341c",
-    "sourceCommit": "5c89d6abb778d45da5d92002eb251978622bedf9"
+    "sourceHash": "v1-2d71f7f934f635256c4af2f4de7312548303557b1273d6a674522a253e60a735",
+    "sourceCommit": "56cf550e46fed96c0101a3877ccaf8357eecf016"
   }
 }
